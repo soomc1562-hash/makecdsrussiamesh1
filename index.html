@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Шпаргалки — формулы и правила</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1d2a4d">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--paper:#fbfcff;--grid:#cfe0f3;--ink:#1d2a4d;--mut:#5b6785;--red:#d6455b;--hi:#fff6b8;--card:#ffffffd9;--bd:#b9cde6}
+@media (prefers-color-scheme:dark){:root{--paper:#161b2b;--grid:#252d46;--ink:#e6eaf7;--mut:#99a3c0;--red:#ff6b81;--hi:#4a4420;--card:#1c2236d9;--bd:#34406a;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:17px/1.6 Georgia,"Times New Roman",serif;background-color:var(--paper);
+background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.sheet{max-width:760px;margin:0 auto;padding:28px 18px 60px 46px;position:relative;min-height:100vh}
+.sheet::before{content:"";position:absolute;left:28px;top:0;bottom:0;width:2px;background:var(--red);opacity:.7}
+h1{font-size:clamp(34px,7vw,52px);line-height:1.05;margin:10px 0 8px;letter-spacing:-.01em}
+.lead{color:var(--mut);margin:0 0 22px;max-width:46ch}
+.search{width:100%;padding:12px 14px;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--bd);border-radius:6px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+.tabs button{font:inherit;font-size:15px;padding:6px 13px;color:var(--ink);background:var(--card);border:2px solid var(--bd);border-radius:6px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.item{background:var(--card);border:2px solid var(--bd);border-radius:6px;margin:0 0 14px;padding:14px 16px}
+.item h2{font-size:20px;margin:0 0 4px}
+.item .tag{font-size:14px;color:var(--mut);margin:0 0 8px}
+.item p{margin:0 0 6px;white-space:pre-line}
+mark{background:var(--hi);color:inherit;padding:0 2px}
+.empty{padding:20px;border:2px dashed var(--bd);border-radius:6px;color:var(--mut)}
+footer{margin-top:30px;color:var(--mut);font-size:14px}
+</style>
+</head>
+<body>
+<main class="sheet">
+<h1>Шпаргалки</h1>
+<p class="lead">Основные формулы и правила по школьным предметам. Выберите предмет или найдите нужное слово.</p>
+<input class="search" id="q" type="search" placeholder="Например: дискриминант, Ом, тся" aria-label="Поиск по шпаргалкам">
+<div class="tabs" id="tabs" role="group" aria-label="Предметы"></div>
+<div id="list" aria-live="polite"></div>
+<footer>Сверяйтесь с учебником: в разных программах обозначения могут отличаться.</footer>
+</main>
+<script>
+var DATA=[
+["Алгебра","Формулы сокращённого умножения","(a + b)² = a² + 2ab + b²\n(a − b)² = a² − 2ab + b²\na² − b² = (a − b)(a + b)"],
+["Алгебра","Квадратное уравнение","ax² + bx + c = 0\nD = b² − 4ac\nЕсли D > 0, два корня: x = (−b ± √D) / 2a\nЕсли D = 0, один корень: x = −b / 2a\nЕсли D < 0, корней нет."],
+["Алгебра","Теорема Виета","Для x² + px + q = 0:\nx₁ + x₂ = −p\nx₁ · x₂ = q"],
+["Алгебра","Свойства степеней","aⁿ · aᵐ = aⁿ⁺ᵐ\naⁿ / aᵐ = aⁿ⁻ᵐ\n(aⁿ)ᵐ = aⁿᵐ\na⁰ = 1 (при a ≠ 0)"],
+["Геометрия","Площади фигур","Треугольник: S = ½ · a · h\nПрямоугольник: S = a · b\nТрапеция: S = ½ (a + b) · h\nКруг: S = πr²"],
+["Геометрия","Теорема Пифагора","В прямоугольном треугольнике a² + b² = c², где c — гипотенуза."],
+["Геометрия","Суммы углов","Треугольник: 180°\nВыпуклый n-угольник: 180° · (n − 2)"],
+["Физика","Основные формулы","Скорость: v = s / t\nПлотность: ρ = m / V\nДавление: p = F / S\nСила тяжести: F = mg (g ≈ 9,8 м/с²)"],
+["Физика","Работа и мощность","Работа: A = F · s\nМощность: N = A / t"],
+["Физика","Закон Ома и соединения","Закон Ома: I = U / R\nПоследовательно: R = R₁ + R₂\nПараллельно: 1/R = 1/R₁ + 1/R₂"],
+["Русский язык","-тся и -ться","Задайте вопрос к глаголу.\n«Что делает?» — пишем -тся (учится).\n«Что делать?» — пишем -ться (учиться)."],
+["Русский язык","Не с глаголами","Обычно пишется раздельно: не читать.\nСлитно, если слово без «не» не употребляется: ненавидеть."],
+["Русский язык","Безударные гласные в корне","Подберите однокоренное слово, где гласная под ударением: вода → воды, значит «вода»."],
+["Английский","Времена: основные формы","Present Simple: I work, he works\nPast Simple: worked (или вторая форма глагола)\nPresent Perfect: have / has + третья форма (I have seen)\nFuture Simple: will + глагол (I will go)"]
+];
+var subj="Все",$=function(i){return document.getElementById(i)};
+var subjects=["Все"];DATA.forEach(function(d){if(subjects.indexOf(d[0])<0)subjects.push(d[0])});
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function mark(s,q){s=esc(s);if(!q)return s;var e=esc(q).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");return s.replace(new RegExp("("+e+")","gi"),"<mark>$1</mark>")}
+function tabs(){$("tabs").innerHTML="";subjects.forEach(function(s){var b=document.createElement("button");b.type="button";b.textContent=s;b.setAttribute("aria-pressed",s===subj);b.onclick=function(){subj=s;tabs();draw()};$("tabs").appendChild(b)})}
+function draw(){var q=$("q").value.trim(),ql=q.toLowerCase(),out="";
+DATA.forEach(function(d){if(subj!=="Все"&&d[0]!==subj)return;if(ql&&(d[1]+" "+d[2]).toLowerCase().indexOf(ql)<0)return;
+out+='<section class="item"><h2>'+mark(d[1],q)+'</h2><p class="tag">'+d[0]+'</p><p>'+mark(d[2],q)+'</p></section>'});
+$("list").innerHTML=out||'<div class="empty">Ничего не найдено. Попробуйте другое слово или выберите «Все».</div>'}
+$("q").oninput=draw;tabs();draw();
+if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
+</script>
+</body>
+</html>
